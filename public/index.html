@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>OpenSea Producer Controller</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; }
+        button { margin: 0.5em; padding: 0.5em 1em; }
+        #status { margin-top: 1em; }
+    </style>
+</head>
+<body>
+    <h1>OpenSea Kafka Producer</h1>
+    <div>
+        <label for="duration">Run Duration (in milliseconds):</label>
+        <input type="number" id="duration" value="86400000">
+    </div>
+    <button id="startButton">Start Producer</button>
+    <button id="stopButton">Stop Producer</button>
+    <div id="status"></div>
+    <script src="script.js"></script>
+</body>
+</html>
