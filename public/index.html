@@ -4,20 +4,231 @@
     <meta charset="UTF-8">
     <title>OpenSea Producer Controller</title>
     <style>
-        body { font-family: sans-serif; margin: 2em; }
-        button { margin: 0.5em; padding: 0.5em 1em; }
-        #status { margin-top: 1em; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f4f7f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 30px;
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ebee;
+            padding-bottom: 10px;
+        }
+        .feature-group {
+            margin-bottom: 25px;
+        }
+        .feature-group h2 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f2f5;
+            padding-bottom: 5px;
+        }
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        .radio-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .radio-container input[type="radio"] {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+            outline: none;
+            transition: border-color 0.2s ease-in-out;
+        }
+        .radio-container input[type="radio"]:checked {
+            border-color: #007bff;
+        }
+        .radio-container input[type="radio"]:checked::before {
+            content: '';
+            display: block;
+            width: 10px;
+            height: 10px;
+            margin: 2px;
+            border-radius: 50%;
+            background-color: #007bff;
+        }
+        .radio-container label {
+            color: #555;
+            cursor: pointer;
+        }
+        .input-text-container {
+            display: none;
+        }
+        input[type="number"], input[type="text"], select {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        input[type="number"]:focus, input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        .add-topic-btn, .file-browse-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        .add-topic-btn:hover, .file-browse-btn:hover {
+            background-color: #0056b3;
+        }
+        .actions {
+            margin-top: 25px;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .actions button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #stopButton {
+            background-color: #dc3545;
+        }
+        .actions button:hover {
+            background-color: #218838;
+        }
+        #stopButton:hover {
+            background-color: #c82333;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-    <h1>OpenSea Kafka Producer</h1>
-    <div>
-        <label for="duration">Run Duration (in milliseconds):</label>
-        <input type="number" id="duration" value="86400000">
+    <div class="container">
+        <h1>OpenSea Producer Controller</h1>
+        <form id="producer-form">
+            <div class="feature-group">
+                <h2>Duration Selection</h2>
+                <div class="form-row">
+                    <div class="radio-container">
+                        <input type="radio" id="duration-hrs" name="duration-type" value="hours" checked>
+                        <label for="duration-hrs">Hours</label>
+                    </div>
+                    <div class="input-text-container" id="hours-input-container">
+                        <input type="number" id="duration-value-hrs" value="1">
+                        <span>hrs</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="radio-container">
+                        <input type="radio" id="duration-days" name="duration-type" value="days">
+                        <label for="duration-days">Days</label>
+                    </div>
+                    <div class="input-text-container" id="days-input-container" style="display: none;">
+                        <input type="number" id="duration-value-days" value="1">
+                        <span>days</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="radio-container">
+                        <input type="radio" id="duration-until-stopped" name="duration-type" value="untilStopped">
+                        <label for="duration-until-stopped">Until Stopped</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="feature-group">
+                <h2>Output</h2>
+                <div class="form-row">
+                    <div class="radio-container">
+                        <input type="radio" id="output-kafka" name="output-type" value="kafka" checked>
+                        <label for="output-kafka">Kafka</label>
+                    </div>
+                </div>
+                <div id="kafka-settings">
+                    <div class="form-row">
+                        <label for="kafka-topic">Topic:</label>
+                        <select id="kafka-topic">
+                            <option value="topic1">Topic 1</option>
+                            <option value="topic2">Topic 2</option>
+                        </select>
+                        <button type="button" class="add-topic-btn">Add New Topic</button>
+                    </div>
+                    <div class="form-row">
+                        <label for="kafka-clientId">Client ID:</label>
+                        <input type="text" id="kafka-clientId" value="my-client">
+                    </div>
+                    <div class="form-row">
+                        <label for="kafka-brokers">Brokers:</label>
+                        <input type="text" id="kafka-brokers" value="localhost:9097">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="radio-container">
+                        <input type="radio" id="output-csv" name="output-type" value="csv">
+                        <label for="output-csv">CSV</label>
+                    </div>
+                </div>
+                <div id="csv-settings" style="display: none;">
+                    <div class="form-row">
+                        <label for="csv-location">Save Location:</label>
+                        <input type="file" id="csv-location" webkitdirectory>
+                    </div>
+                    <div class="form-row">
+                        <label for="csv-filename">Filename:</label>
+                        <input type="text" id="csv-filename" value="output.csv" disabled>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="actions">
+            <button id="startButton">Start Producer</button>
+            <button id="stopButton">Stop Producer</button>
+        </div>
+
+        <div id="status"></div>
     </div>
-    <button id="startButton">Start Producer</button>
-    <button id="stopButton">Stop Producer</button>
-    <div id="status"></div>
     <script src="script.js"></script>
 </body>
 </html>
