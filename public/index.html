@@ -140,6 +140,23 @@
             border-radius: 8px;
             color: #333;
         }
+        #log-console {
+            margin-top: 20px;
+            border: 1px solid #d1d9e6;
+            border-radius: 8px;
+            height: 200px;
+            overflow-y: scroll;
+            background-color: #fafbfd;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #4a4a4a;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            white-space: pre-wrap; /* Preserve whitespace and wrap long lines */
+            word-wrap: break-word; /* Break long words */
+        }
     </style>
 </head>
 <body>
@@ -228,6 +245,7 @@
         </div>
 
         <div id="status"></div>
+        <div id="log-console"></div>
     </div>
     <script src="script.js"></script>
 </body>

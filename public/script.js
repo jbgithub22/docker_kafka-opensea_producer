@@ -28,6 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    const logConsole = document.getElementById('log-console');
+    let logInterval;
+
+    function addLogEntry(message) {
+        const timestamp = new Date().toLocaleString();
+        const logEntry = document.createElement('p');
+        logEntry.classList.add('log-entry');
+        logEntry.textContent = `[${timestamp}] ${message}`;
+        logConsole.appendChild(logEntry);
+        // Auto-scroll to the bottom
+        logConsole.scrollTop = logConsole.scrollHeight;
+    }
+
     document.getElementById('startButton').addEventListener('click', async () => {
         const durationType = document.querySelector('input[name="duration-type"]:checked').value;
         let duration = null;
@@ -46,10 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 brokers: document.getElementById('kafka-brokers').value
             };
         } else if (outputType === 'csv') {
-            // Note: The file path for a CSV output would typically be handled server-side.
-            // The `webkitdirectory` attribute allows the user to select a directory, but the
-            // JavaScript cannot read the full file path for security reasons.
-            // This is a client-side representation of the user selecting a save location.
             const fileInput = document.getElementById('csv-location');
             outputSettingsData = {
                 saveLocation: fileInput.files.length > 0 ? fileInput.files[0].webkitRelativePath.split('/')[0] : 'N/A'
@@ -68,6 +77,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const status = await response.text();
         document.getElementById('status').innerText = status;
+
+        // Start logging to the console
+        addLogEntry('Producer started successfully.');
+        logInterval = setInterval(() => {
+            addLogEntry('Sending data to Kafka...');
+        }, 2000); // Simulate a log every 2 seconds
     });
 
     document.getElementById('stopButton').addEventListener('click', async () => {
@@ -76,5 +91,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const status = await response.text();
         document.getElementById('status').innerText = status;
+
+        // Stop logging and add a final entry
+        clearInterval(logInterval);
+        addLogEntry('Producer stopped.');
     });
 });
