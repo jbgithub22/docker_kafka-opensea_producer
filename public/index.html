@@ -7,6 +7,13 @@
 </head>
 <body>
     <div class="container">
+        <div class="switch-container">
+            <span class="switch-label">Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle">
+                <span class="slider"></span>
+            </label>
+        </div>
         <h1>OpenSea Producer Controller</h1>
         <form id="producer-form">
             <div class="feature-group">
@@ -94,5 +101,11 @@
         <div id="log-console"></div>
     </div>
     <script src="script.js"></script>
+    <script>
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        darkModeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode', darkModeToggle.checked);
+        });
+    </script>
 </body>
 </html>
